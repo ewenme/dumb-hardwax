@@ -64,7 +64,7 @@ foo <- reviews[str_length(reviews) <= 140]
 foo <- foo[!is.na(foo) & foo != ""]
 
 # remove punctuation
-foo <- gsub('[[:punct:] ]+',' ', foo)
+# foo <- gsub('[[:punct:] ]+',' ', foo)
 
 # remove duplicates
 foo <- foo[!duplicated(foo)]
@@ -79,16 +79,16 @@ words <- foo %>%
   unnest_tokens(word, value, token = "ngrams", to_lower = TRUE, n = 1)
 
 # get word counts
-word_counts <- count(words, word, sort = TRUE)
+word_counts <- count(words, word, sort = TRUE) %>% filter(word != "")
 
 # get sentence openers
 openers <- str_extract(foo$value, '\\w*') %>% str_to_lower() %>% as_data_frame()
 
 # get opener counts
-opener_counts <- count(openers, value, sort = TRUE)
+opener_counts <- count(openers, value, sort = TRUE) %>% rename(word=value) %>% filter(word != "")
 
 # get words preceding commas
-comma_precede <- str_split_fixed(foo$value, ',', 5)  %>% as_data_frame() 
+comma_precede <- str_split_fixed(foo$value, ',', 5)  %>% as_data_frame() %>% filter(`V1` != "")
 
 a <- comma_precede %>% filter(V2 != "") 
 b <- a %>% filter(`V3` != "") %>% select(`V2`) %>% as.vector()
@@ -107,9 +107,11 @@ comma_precede_counts <- count(comma_precede, value, sort = TRUE) %>% rename(comm
 
 # join to abs word counts
 word_counts <- left_join(word_counts, comma_precede_counts, by=c("word"="value"))
+opener_counts <- left_join(opener_counts, comma_precede_counts, by=c("word"="value"))
 
 # probability of comma after word
 word_counts$comma_prob <- round((word_counts$comma_n / word_counts$n) * 100)
+opener_counts$comma_prob <- round((opener_counts$comma_n / opener_counts$n) * 100)
 
 # create bigrams
 bigrams <- foo %>%
@@ -194,9 +196,19 @@ generate_sentence <- function(word1, word2, sentencelength=5, debug =FALSE){
   output <- paste(sentence, collapse = " ")
   
   # add tip sometimes
-  tip_n <- sample(1:10, 1)
-  if(tip_n == 1){
+  tip_n <- sample(1:20, 1)
+  if(tip_n %in% c(1, 2)){
     output <- paste(output, "- TIP!")
+  } else if(tip_n %in% c(3, 4)){
+    output <- paste(output, "(one per customer)")
+  } else if(tip_n %in% c(5)){
+    output <- paste(output, "- Killer!")
+  } else if(tip_n %in% c(6, 7)){
+    output <- paste(output, "- Warmly Recommended!")
+  } else if(tip_n %in% c(8, 9)){
+    output <- paste(output, "- Highly Recommended!")
+  } else if(tip_n %in% c(10, 11)){
+    output <- paste(output, "(w/ download code)")
   }
   
   # print
@@ -206,8 +218,9 @@ generate_sentence <- function(word1, word2, sentencelength=5, debug =FALSE){
 
 # GENERATOR -------------------------------------------------
 
+
 # first word sample (from openers)
-a <- sample_n(word_counts, size=1, weight = n)
+a <- sample_n(opener_counts, size=1, weight = n)
 
 # second word sample
 b <- sample_n(word_counts, size=1, weight = n)
@@ -221,6 +234,7 @@ commas <- sample(0:100, 1)
 # generate sentence
 generate_sentence(word1=a, word2=b, 
                   sentencelength=len)
+
 
 
 

@@ -4,7 +4,9 @@ library(rvest)
 library(tidyverse)
 library(stringr)
 library(tidytext)
-library(ngram)
+
+setwd("~/Documents/Github/hardwax_bot")
+
 
 # FUNCTIONS --------------------------------------------
 
@@ -58,82 +60,18 @@ reviews <- c(news, last_news, back_in_stock, downloads, electro, grime, techno, 
 # CLEAN ---------------------------------------------------------
 
 # check strings 140 chrs at most
-foo <- reviews[str_length(reviews) <= 140]
+reviews <- reviews[str_length(reviews) <= 140]
 
 # remove empty or NA strings
-foo <- foo[!is.na(foo) & foo != ""]
+reviews <- reviews[!is.na(reviews) & reviews != ""]
 
 # remove punctuation
 # foo <- gsub('[[:punct:] ]+',' ', foo)
 
 # remove duplicates
-foo <- foo[!duplicated(foo)]
+reviews <- reviews[!duplicated(reviews)]
 
 # turn too datframe
-foo <- as_data_frame(foo)
+reviews <- as_data_frame(reviews)
 
-# TEXT MINING ---------------------------------------------------
-
-# get unique words
-words <- foo %>%
-  unnest_tokens(word, value, token = "ngrams", to_lower = TRUE, n = 1)
-
-# get word counts
-word_counts <- count(words, word, sort = TRUE) %>% filter(word != "")
-
-# get sentence openers
-openers <- str_extract(foo$value, '\\w*') %>% str_to_lower() %>% as_data_frame()
-
-# get opener counts
-opener_counts <- count(openers, value, sort = TRUE) %>% rename(word=value) %>% filter(word != "")
-
-# get words preceding commas
-comma_precede <- str_split_fixed(foo$value, ',', 5)  %>% as_data_frame() %>% filter(`V1` != "")
-
-a <- comma_precede %>% filter(V2 != "") 
-b <- a %>% filter(`V3` != "") %>% select(`V2`) %>% as.vector()
-c <- a %>% filter(`V4` != "") %>% select(`V3`)
-d <- a %>% filter(`V5` != "") %>% select(`V4`)
-comma_precede <- c(a$V1, b$V2, c$V3, d$V4) %>% as_data_frame()
-
-# get last words preceding commas
-comma_precede$value <- word(comma_precede$value, -1)
-
-# make lower case
-comma_precede$value <- tolower(comma_precede$value)
-
-# get word proceeding comma counts
-comma_precede_counts <- count(comma_precede, value, sort = TRUE) %>% rename(comma_n=n)
-
-# join to abs word counts
-word_counts <- left_join(word_counts, comma_precede_counts, by=c("word"="value"))
-opener_counts <- left_join(opener_counts, comma_precede_counts, by=c("word"="value"))
-
-# probability of comma after word
-word_counts$comma_prob <- round((word_counts$comma_n / word_counts$n) * 100)
-opener_counts$comma_prob <- round((opener_counts$comma_n / opener_counts$n) * 100)
-
-# create bigrams
-bigrams <- foo %>%
-  unnest_tokens(bigram, value, token = "ngrams", to_lower = TRUE, n = 2) %>% 
-  # separate bigram col
-  separate(bigram, c("word1", "word2"), sep = " ")
-  # filter(!word1 %in% stop_words$word) %>%
-  # filter(!word2 %in% stop_words$word)
-
-# new bigram counts:
-bigram_counts <- bigrams %>% 
-  count(word1, word2, sort = TRUE)
-
-# create bigrams
-trigrams <- foo %>%
-  unnest_tokens(trigram, value, token = "ngrams", to_lower = TRUE, n = 3) %>% 
-  # separate bigram col
-  separate(trigram, c("word1", "word2", "word3"), sep = " ")
-  # filter(!word1 %in% stop_words$word) %>%
-  # filter(!word2 %in% stop_words$word) %>%
-  # filter(!word3 %in% stop_words$word)
-
-# new bigram counts:
-trigram_counts <- trigrams %>% 
-  count(word1, word2, word3, sort = TRUE)
+write_csv(reviews, "reviews.csv")

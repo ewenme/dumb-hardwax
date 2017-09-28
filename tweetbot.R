@@ -4,23 +4,27 @@ library(tidyverse)
 library(stringr)
 library(tidytext)
 
+setwd("~/Documents/Github/hardwax_bot")
+
+reviews <- read_csv("reviews.csv")
+
 # TEXT MINING ---------------------------------------------------
 
 # get unique words
-words <- foo %>%
+words <- reviews %>%
   unnest_tokens(word, value, token = "ngrams", to_lower = TRUE, n = 1)
 
 # get word counts
 word_counts <- count(words, word, sort = TRUE) %>% filter(word != "")
 
 # get sentence openers
-openers <- str_extract(foo$value, '\\w*') %>% str_to_lower() %>% as_data_frame()
+openers <- str_extract(reviews$value, '\\w*') %>% str_to_lower() %>% as_data_frame()
 
 # get opener counts
 opener_counts <- count(openers, value, sort = TRUE) %>% rename(word=value) %>% filter(word != "")
 
 # get words preceding commas
-comma_precede <- str_split_fixed(foo$value, ',', 5)  %>% as_data_frame() %>% filter(`V1` != "")
+comma_precede <- str_split_fixed(reviews$value, ',', 5)  %>% as_data_frame() %>% filter(`V1` != "")
 
 a <- comma_precede %>% filter(V2 != "") 
 b <- a %>% filter(`V3` != "") %>% select(`V2`) %>% as.vector()
@@ -44,9 +48,11 @@ opener_counts <- left_join(opener_counts, comma_precede_counts, by=c("word"="val
 # probability of comma after word
 word_counts$comma_prob <- round((word_counts$comma_n / word_counts$n) * 100)
 opener_counts$comma_prob <- round((opener_counts$comma_n / opener_counts$n) * 100)
+word_counts$comma_prob[is.na(word_counts$comma_prob)] <- 0
+opener_counts$comma_prob[is.na(opener_counts$comma_prob)] <- 0
 
 # create bigrams
-bigrams <- foo %>%
+bigrams <- reviews %>%
   unnest_tokens(bigram, value, token = "ngrams", to_lower = TRUE, n = 2) %>% 
   # separate bigram col
   separate(bigram, c("word1", "word2"), sep = " ")
@@ -58,7 +64,7 @@ bigram_counts <- bigrams %>%
   count(word1, word2, sort = TRUE)
 
 # create bigrams
-trigrams <- foo %>%
+trigrams <- reviews %>%
   unnest_tokens(trigram, value, token = "ngrams", to_lower = TRUE, n = 3) %>% 
   # separate bigram col
   separate(trigram, c("word1", "word2", "word3"), sep = " ")
@@ -100,7 +106,7 @@ return_third_word <- function(woord1, woord2){
 }
 
 # sentence generator
-generate_sentence <- function(word1, word2, sentencelength=5, debug =FALSE){
+generate_sentence <- function(word1, word2, sentencelength, debug =FALSE){
   
   # comma chance sample
   commas <- sample(0:100, 1)
@@ -119,11 +125,22 @@ generate_sentence <- function(word1, word2, sentencelength=5, debug =FALSE){
   woord1 <- word1$word
   woord2 <- word2$word
   for(i in seq_len(sentencelength)){
+    
+    commas <- sample(0:100, 1)
+    
     if(debug == TRUE)print(i)
     word <- return_third_word( woord1, woord2)
-    sentence <- c(sentence, word)
+    
+    word <- left_join(as_data_frame(word), word_counts, by=c("value"="word"))
+    
+    if(commas <= as.numeric(word$comma_prob)) {
+      sentence <- paste(sentence, ", ", word$value[1], sep="")
+    } else {
+      sentence <- c(sentence, word$value)
+    }
+    
     woord1 <- woord2
-    woord2 <- word
+    woord2 <- word$value[1]
   }
   
   # paste sentence together
@@ -152,15 +169,23 @@ generate_sentence <- function(word1, word2, sentencelength=5, debug =FALSE){
 
 # GENERATOR -------------------------------------------------
 
-test <- unlist(foo$value)
-markovchain::markovchainFit(test)
+
 # generate sentence
-review <- ""
-
-while (review == "") {
-
-review <- generate_sentence(word1=sample_n(opener_counts, size=1, weight = n), 
-                            word2=sample_n(word_counts, size=1, weight = n), 
-                            sentencelength=sample(5:10, 1))
-if(review != "") break()
+reviewer <- function(x) {
+  success <- FALSE
+  while (!success) {
+    # do something
+    a <- sample_n(opener_counts, size=1, weight = n)
+    b <- sample_n(word_counts, size=1, weight = n)
+    len <- sample(5:12, 1, replace = TRUE)
+    review <- generate_sentence(word1=a, word2=b, sentencelength=len)
+    # check for success
+    success <-  str_length(review) > 0
+  }
+  return(review)
 }
+
+reviewer()
+
+
+

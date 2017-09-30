@@ -4,10 +4,14 @@ library(tidyverse)
 library(stringr)
 library(rtweet)
 
-word_counts <- read_csv("https://raw.github.com/ewenme/hardwax_bot/master/Data/words.csv")
-opener_counts <- read_csv("https://raw.github.com/ewenme/hardwax_bot/master/Data/openers.csv")
-bigram_counts <- read_csv("https://raw.github.com/ewenme/hardwax_bot/master/Data/bigrams.csv")
-trigram_counts <- read_csv("https://raw.github.com/ewenme/hardwax_bot/master/Data/trigrams.csv")
+word_counts <- read.csv("https://raw.github.com/ewenme/hardwax_bot/master/Data/words.csv",
+                        stringsAsFactors = FALSE)
+opener_counts <- read.csv("https://raw.github.com/ewenme/hardwax_bot/master/Data/openers.csv",
+                          stringsAsFactors = FALSE)
+bigram_counts <- read.csv("https://raw.github.com/ewenme/hardwax_bot/master/Data/bigrams.csv",
+                          stringsAsFactors = FALSE)
+trigram_counts <- read.csv("https://raw.github.com/ewenme/hardwax_bot/master/Data/trigrams.csv",
+                           stringsAsFactors = FALSE)
 
 # NEXT WORD PREDICTION -------------------------------------------
 
@@ -116,31 +120,6 @@ dumb_hardwax <- function(x) {
 }
 
 
-# BOT INIT --------------------------------------------------------
-
-## name assigned to created app
-appname <- "dumb_hardwax"
-## api key (example below is not a real key)
-key <- "l0V6xuUUntFGN4eEblPYTSw5U"
-## api secret (example below is not a real key)
-secret <- "VmYihhRJuj88Lq4AZgOmmU2R3KqLsRME66dsTrwUr7ZKi7c4Z6"
-twitter_token <- create_token(
-  app = appname,
-  consumer_key = key,
-  consumer_secret = secret)
-
-# combine with name for token
-file_name <- file.path(getwd(), "twitter_token.rds")
-
-# save token
-saveRDS(twitter_token, file = "twitter_token.rds")
-
-# create environment file
-cat(paste0("TWITTER_PAT=", file_name),
-    file = file.path(getwd(), ".Renviron"),
-    append = TRUE)
-
-
 # TWEET --------------------------------------------------------
 
 time <- Sys.time()
@@ -150,8 +129,3 @@ tweet_text <- dumb_hardwax()
 
 # post tweet
 post_tweet(status = tweet_text)
-
-# write tweet to file
-dumb_reviews <- data.frame(time = Sys.time(), review = tweet_text)
-
-write.table(dumb_reviews, file = "dumb_reviews.csv", row.names = FALSE, append = TRUE)

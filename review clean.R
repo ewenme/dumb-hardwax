@@ -80,3 +80,28 @@ write_csv(word_counts, "./Data/words.csv")
 write_csv(opener_counts, "./Data/openers.csv")
 write_csv(bigram_counts, "./Data/bigrams.csv")
 write_csv(trigram_counts, "./Data/trigrams.csv")
+
+
+# BOT INIT --------------------------------------------------------
+
+# ## name assigned to created app
+# appname <- "dumb_hardwax"
+# ## api key (example below is not a real key)
+# key <- "l0V6xuUUntFGN4eEblPYTSw5U"
+# ## api secret (example below is not a real key)
+# secret <- "VmYihhRJuj88Lq4AZgOmmU2R3KqLsRME66dsTrwUr7ZKi7c4Z6"
+# twitter_token <- create_token(
+#   app = appname,
+#   consumer_key = key,
+#   consumer_secret = secret)
+# 
+# # combine with name for token
+# file_name <- file.path(getwd(), "twitter_token.rds")
+# 
+# # save token
+# saveRDS(twitter_token, file = "twitter_token.rds")
+# 
+# # create environment file
+# cat(paste0("TWITTER_PAT=", file_name),
+#     file = file.path(getwd(), ".Renviron"),
+#     append = TRUE)

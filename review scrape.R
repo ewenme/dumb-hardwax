@@ -74,4 +74,4 @@ reviews <- reviews[!duplicated(reviews)]
 # turn too datframe
 reviews <- as_data_frame(reviews)
 
-write_csv(reviews, "reviews.csv")
+write_csv(reviews, "./Data/reviews.csv")

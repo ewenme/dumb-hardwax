@@ -13,6 +13,10 @@ bigram_counts <- read.csv("https://raw.github.com/ewenme/hardwax_bot/master/Data
 trigram_counts <- read.csv("https://raw.github.com/ewenme/hardwax_bot/master/Data/trigrams.csv",
                            stringsAsFactors = FALSE)
 
+# set twitter token
+twitter_token <- readRDS(gzcon(url("https://raw.github.com/ewenme/hardwax_bot/master/twitter_token.rds")))
+
+
 # NEXT WORD PREDICTION -------------------------------------------
 
 # capitalise first letter
@@ -128,4 +132,4 @@ time <- Sys.time()
 tweet_text <- dumb_hardwax()
 
 # post tweet
-post_tweet(status = tweet_text)
+post_tweet(status = tweet_text, token = twitter_token)

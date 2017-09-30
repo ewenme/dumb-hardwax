@@ -205,3 +205,19 @@ saveRDS(twitter_token, file = "twitter_token.rds")
 cat(paste0("TWITTER_PAT=", file_name),
     file = file.path(getwd(), ".Renviron"),
     append = TRUE)
+
+
+# TWEET --------------------------------------------------------
+
+time <- Sys.time()
+
+# create tweet
+tweet_text <- dumb_hardwax()
+
+# post tweet
+post_tweet(status = tweet_text)
+
+# write tweet to file
+dumb_reviews <- data.frame(time = Sys.time(), review = tweet_text)
+
+write.table(dumb_reviews, file = "dumb_reviews.csv", row.names = FALSE, append = TRUE)

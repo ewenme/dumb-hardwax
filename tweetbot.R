@@ -8,6 +8,7 @@ setwd("~/Documents/Github/hardwax_bot")
 
 reviews <- read_csv("reviews.csv")
 
+
 # TEXT MINING ---------------------------------------------------
 
 # get unique words
@@ -101,7 +102,9 @@ return_third_word <- function(woord1, woord2){
   woord
 }
 
-# sentence generator
+
+# SENTENCE GENERATOR ------------------------------------------
+
 generate_sentence <- function(word1, word2, sentencelength, debug =FALSE){
   
   # comma chance sample
@@ -164,7 +167,7 @@ generate_sentence <- function(word1, word2, sentencelength, debug =FALSE){
 }
 
 
-# GENERATOR -------------------------------------------------
+# REVIEW GENERATOR -------------------------------------------------
 
 # generate review
 dumb_hardwax <- function(x) {
@@ -177,3 +180,20 @@ generate_sentence(word1=a, word2=b, sentencelength=len)
 
 # review!
 dumb_hardwax()
+
+
+# BOT INIT --------------------------------------------------------
+
+## name assigned to created app
+  appname <- "dumb_hardwax"
+  ## api key (example below is not a real key)
+  key <- "l0V6xuUUntFGN4eEblPYTSw5U"
+  ## api secret (example below is not a real key)
+  secret <- "VmYihhRJuj88Lq4AZgOmmU2R3KqLsRME66dsTrwUr7ZKi7c4Z6"
+  twitter_token <- create_token(
+    app = appname,
+    consumer_key = key,
+    consumer_secret = secret)
+  
+## save token
+saveRDS(twitter_token, file = "twitter_token.rds")

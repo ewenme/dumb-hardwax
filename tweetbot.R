@@ -195,5 +195,13 @@ dumb_hardwax()
     consumer_key = key,
     consumer_secret = secret)
   
-## save token
+# combine with name for token
+file_name <- file.path(getwd(), "twitter_token.rds")
+  
+# save token
 saveRDS(twitter_token, file = "twitter_token.rds")
+
+# create environment file
+cat(paste0("TWITTER_PAT=", file_name),
+    file = file.path(getwd(), ".Renviron"),
+    append = TRUE)

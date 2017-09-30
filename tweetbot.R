@@ -1,3 +1,14 @@
+# LOAD -----------------------------------------------------------
+
+library(tidyverse)
+library(stringr)
+library(rtweet)
+
+word_counts <- read_csv("https://raw.github.com/ewenme/hardwax_bot/master/Data/words.csv")
+opener_counts <- read_csv("https://raw.github.com/ewenme/hardwax_bot/master/Data/openers.csv")
+bigram_counts <- read_csv("https://raw.github.com/ewenme/hardwax_bot/master/Data/bigrams.csv")
+trigram_counts <- read_csv("https://raw.github.com/ewenme/hardwax_bot/master/Data/trigrams.csv")
+
 # NEXT WORD PREDICTION -------------------------------------------
 
 # capitalise first letter
@@ -70,6 +81,7 @@ generate_sentence <- function(word1, word2, sentencelength, debug =FALSE){
   # paste sentence together
   output <- paste(sentence, collapse = " ")
   output <- str_replace_all(output, " ,", ",")
+  output <- str_replace_all(output, "  ", " ")
   
   # add tip sometimes
   tip_n <- sample(1:20, 1)
@@ -102,9 +114,6 @@ dumb_hardwax <- function(x) {
   
   generate_sentence(word1=a, word2=b, sentencelength=len)
 }
-
-# review!
-dumb_hardwax()
 
 
 # BOT INIT --------------------------------------------------------

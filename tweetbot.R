@@ -89,16 +89,16 @@ return_third_word <- function(woord1, woord2){
   
   # sample a word to add to first two words
   woord <- trigram_counts %>%
-    filter_(~word1 == woord1, ~word2 == woord2) %>%
-    sample_n(1, weight = n) %>%
-    .[["word3"]]
+    filter_(~word1 == woord1, ~word2 == woord2)
   
-  # if no word found in trigram, resort to bigram
-  if(length(woord) == 0){
-    bleh <- filter_(bigram_counts, ~word1 == woord2) %>%
-      sample_n(1, weight = n)
-    warning("no word found, adding ", bleh, "to", woord1 , woord2)
-    woord <- bleh
+  if(nrow(woord) > 0) {
+    woord <- sample_n(woord, 1, weight = n) %>%
+      .[["word3"]]
+    
+  } else {
+    woord <- filter_(bigram_counts, ~word1 == woord2) %>%
+      sample_n(1, weight = n) %>%
+      .[["word2"]]
   }
   
   # print
@@ -136,7 +136,7 @@ generate_sentence <- function(word1, word2, sentencelength, debug =FALSE){
     if(commas <= as.numeric(word$comma_prob)) {
       sentence <- paste(sentence, ", ", word$value[1], sep="")
     } else {
-      sentence <- c(sentence, word$value)
+      sentence <- c(sentence, word$value[1])
     }
     
     woord1 <- woord2
@@ -171,21 +171,14 @@ generate_sentence <- function(word1, word2, sentencelength, debug =FALSE){
 
 
 # generate sentence
-reviewer <- function(x) {
-  success <- FALSE
-  while (!success) {
-    # do something
-    a <- sample_n(opener_counts, size=1, weight = n)
-    b <- sample_n(word_counts, size=1, weight = n)
-    len <- sample(5:12, 1, replace = TRUE)
-    review <- generate_sentence(word1=a, word2=b, sentencelength=len)
-    # check for success
-    success <-  str_length(review) > 0
-  }
-  return(review)
-}
+a <- sample_n(opener_counts, size=1, weight = n)
+b <- sample_n(word_counts, size=1, weight = n)
+len <- sample(5:12, 1)
 
-reviewer()
+generate_sentence(word1=a, word2=b, sentencelength=len)
+
+
+
 
 
 

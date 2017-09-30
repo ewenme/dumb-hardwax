@@ -3,7 +3,7 @@
 library(tidyverse)
 library(stringr)
 library(tidytext)
-
+library(rtweet)
 setwd("~/Documents/Github/hardwax_bot")
 
 reviews <- read_csv("reviews.csv")
@@ -56,8 +56,6 @@ bigrams <- reviews %>%
   unnest_tokens(bigram, value, token = "ngrams", to_lower = TRUE, n = 2) %>% 
   # separate bigram col
   separate(bigram, c("word1", "word2"), sep = " ")
-# filter(!word1 %in% stop_words$word) %>%
-# filter(!word2 %in% stop_words$word)
 
 # new bigram counts:
 bigram_counts <- bigrams %>% 
@@ -68,13 +66,11 @@ trigrams <- reviews %>%
   unnest_tokens(trigram, value, token = "ngrams", to_lower = TRUE, n = 3) %>% 
   # separate bigram col
   separate(trigram, c("word1", "word2", "word3"), sep = " ")
-# filter(!word1 %in% stop_words$word) %>%
-# filter(!word2 %in% stop_words$word) %>%
-# filter(!word3 %in% stop_words$word)
 
 # new bigram counts:
 trigram_counts <- trigrams %>% 
   count(word1, word2, word3, sort = TRUE)
+
 
 # NEXT WORD PREDICTION -------------------------------------------
 
@@ -134,7 +130,7 @@ generate_sentence <- function(word1, word2, sentencelength, debug =FALSE){
     word <- left_join(as_data_frame(word), word_counts, by=c("value"="word"))
     
     if(commas <= as.numeric(word$comma_prob)) {
-      sentence <- paste(sentence, ", ", word$value[1], sep="")
+      sentence <- c(sentence, ", ", word$value[1])
     } else {
       sentence <- c(sentence, word$value[1])
     }
@@ -145,6 +141,7 @@ generate_sentence <- function(word1, word2, sentencelength, debug =FALSE){
   
   # paste sentence together
   output <- paste(sentence, collapse = " ")
+  output <- str_replace_all(output, " ,", ",")
   
   # add tip sometimes
   tip_n <- sample(1:20, 1)
@@ -169,16 +166,14 @@ generate_sentence <- function(word1, word2, sentencelength, debug =FALSE){
 
 # GENERATOR -------------------------------------------------
 
-
-# generate sentence
+# generate review
+dumb_hardwax <- function(x) {
 a <- sample_n(opener_counts, size=1, weight = n)
 b <- sample_n(word_counts, size=1, weight = n)
 len <- sample(5:12, 1)
 
 generate_sentence(word1=a, word2=b, sentencelength=len)
+}
 
-
-
-
-
-
+# review!
+dumb_hardwax()

@@ -126,8 +126,6 @@ dumb_hardwax <- function(x) {
 
 # TWEET --------------------------------------------------------
 
-time <- Sys.time()
-
 # create tweet
 tweet_text <- dumb_hardwax()
 

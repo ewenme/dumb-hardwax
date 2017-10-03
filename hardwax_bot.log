@@ -14,3 +14,19 @@ Set default project name to 'hardwax-bot'
 Set default zone name to 'europe-west1-b'
 2017-10-02 23:15:11> VM running
 your tweet has been posted!
+Loading tidyverse: ggplot2
+Loading tidyverse: tibble
+Loading tidyverse: tidyr
+Loading tidyverse: readr
+Loading tidyverse: purrr
+Loading tidyverse: dplyr
+Conflicts with tidy packages ---------------------------------------------------
+filter(): dplyr, stats
+lag():    dplyr, stats
+Welcome to rtweet v0.4.0!
+Setting scopes to https://www.googleapis.com/auth/cloud-platform
+If you need additional scopes set do so via options(googleAuthR.scopes.selected = c('scope1', 'scope2')) before loading library and include one required scope.
+Set default project name to 'hardwax-bot'
+Set default zone name to 'europe-west1-b'
+2017-10-03 21:15:10> VM running
+your tweet has been posted!

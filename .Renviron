@@ -1,1 +1,4 @@
 TWITTER_PAT=/Users/Ewen/Documents/Github/hardwax_bot/twitter_token.rds
+GCE_AUTH_FILE="~/Documents/Github/hardwax_bot/hardwax_bot_cloud.json"
+GCE_DEFAULT_PROJECT_ID="my-project-1479248797709"
+GCE_DEFAULT_ZONE="europe-west1-b"

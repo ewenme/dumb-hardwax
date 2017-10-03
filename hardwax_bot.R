@@ -160,3 +160,8 @@ tweet_text <- dumb_hardwax()
 
 # post tweet
 post_tweet(status = tweet_text, token = twitter_token)
+
+
+# STOP -------------------------------------------------------------
+
+gce_vm_stop(vm)

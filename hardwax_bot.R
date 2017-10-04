@@ -2,11 +2,13 @@
 
 options(repos = "https://mran.microsoft.com")
 
-if (!require('tidyverse')) install.packages('tidyverse')
+if (!require('readr')) install.packages('readr')
+if (!require('dplyr')) install.packages('dplyr')
 if (!require('stringr')) install.packages('stringr')
 if (!require('rtweet')) install.packages('rtweet')
 
-library(tidyverse)
+library(dplyr)
+library(readr)
 library(stringr)
 library(rtweet)
 

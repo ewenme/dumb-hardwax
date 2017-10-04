@@ -1,7 +1,5 @@
 # LOAD -----------------------------------------------------------
 
-install.packages(c("tidyverse", "stringr", "rtweet"))
-
 library(tidyverse)
 library(stringr)
 library(rtweet)

@@ -2,24 +2,22 @@
 
 options(repos = "https://mran.microsoft.com")
 
-if (!require('readr')) install.packages('readr')
 if (!require('dplyr')) install.packages('dplyr')
 if (!require('stringr')) install.packages('stringr')
 if (!require('rtweet')) install.packages('rtweet')
 
 library(dplyr)
-library(readr)
 library(stringr)
 library(rtweet)
 
 # load data
-word_counts <- read_csv("https://raw.github.com/ewenme/hardwax_bot/master/Data/words.csv")
+word_counts <- read.csv("https://raw.github.com/ewenme/hardwax_bot/master/Data/words.csv", stringsAsFactors = FALSE)
 
-opener_counts <- read_csv("https://raw.github.com/ewenme/hardwax_bot/master/Data/openers.csv")
+opener_counts <- read.csv("https://raw.github.com/ewenme/hardwax_bot/master/Data/openers.csv", stringsAsFactors = FALSE)
 
-bigram_counts <- read_csv("https://raw.github.com/ewenme/hardwax_bot/master/Data/bigrams.csv")
+bigram_counts <- read.csv("https://raw.github.com/ewenme/hardwax_bot/master/Data/bigrams.csv", stringsAsFactors = FALSE)
 
-trigram_counts <- read_csv("https://raw.github.com/ewenme/hardwax_bot/master/Data/trigrams.csv")
+trigram_counts <- read.csv("https://raw.github.com/ewenme/hardwax_bot/master/Data/trigrams.csv", stringsAsFactors = FALSE)
 
 # set twitter token
 twitter_token <- readRDS(gzcon(url("https://raw.github.com/ewenme/hardwax_bot/master/twitter_token.rds")))

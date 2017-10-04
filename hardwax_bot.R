@@ -1,5 +1,11 @@
 # LOAD -----------------------------------------------------------
 
+options(repos = "https://mran.microsoft.com")
+
+if (!require('tidyverse')) install.packages('tidyverse')
+if (!require('stringr')) install.packages('stringr')
+if (!require('rtweet')) install.packages('rtweet')
+
 library(tidyverse)
 library(stringr)
 library(rtweet)

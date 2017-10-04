@@ -1,19 +1,19 @@
 # LOAD -----------------------------------------------------------
 
+installed.packages(c("tidyverse", "stringr", "rtweet"))
+
 library(tidyverse)
 library(stringr)
 library(rtweet)
-library(googleComputeEngineR)
 
 # load data
-word_counts <- read.csv("https://raw.github.com/ewenme/hardwax_bot/master/Data/words.csv",
-                        stringsAsFactors = FALSE)
-opener_counts <- read.csv("https://raw.github.com/ewenme/hardwax_bot/master/Data/openers.csv",
-                          stringsAsFactors = FALSE)
-bigram_counts <- read.csv("https://raw.github.com/ewenme/hardwax_bot/master/Data/bigrams.csv",
-                          stringsAsFactors = FALSE)
-trigram_counts <- read.csv("https://raw.github.com/ewenme/hardwax_bot/master/Data/trigrams.csv",
-                           stringsAsFactors = FALSE)
+word_counts <- read_csv("https://raw.github.com/ewenme/hardwax_bot/master/Data/words.csv")
+
+opener_counts <- read_csv("https://raw.github.com/ewenme/hardwax_bot/master/Data/openers.csv")
+
+bigram_counts <- read_csv("https://raw.github.com/ewenme/hardwax_bot/master/Data/bigrams.csv")
+
+trigram_counts <- read_csv("https://raw.github.com/ewenme/hardwax_bot/master/Data/trigrams.csv")
 
 # set twitter token
 twitter_token <- readRDS(gzcon(url("https://raw.github.com/ewenme/hardwax_bot/master/twitter_token.rds")))

@@ -5,33 +5,6 @@ library(stringr)
 library(rtweet)
 library(googleComputeEngineR)
 
-# set global objects
-project <- "hardwax-bot"
-zone <- "europe-west1-b"
-account_key <- "/Users/Ewen/Documents/Github/hardwax_bot/hardwax-bot-4b21f161a9be.json"
-
-Sys.setenv(GCE_AUTH_FILE=account_key,
-           GCE_DEFAULT_PROJECT_ID=project,
-           GCE_DEFAULT_ZONE=zone)
-
-# authorise gce
-gce_auth()
-gce_global_project(project)
-gce_global_zone(zone)
-
-default_project <- gce_get_project("hardwax-bot")
-
-# get tag name of public pre-made image
-tag <- gce_tag_container("google-auth-r-cron-tidy", project = "gcer-public")
-
-# set up vm with cron and r studio server
-vm <- gce_vm("rstudio-cron-googleauthr", 
-             predefined_type = "n1-standard-1",
-             template = "rstudio", 
-             dynamic_image = tag, 
-             username = "ewen", 
-             password = "ewen1234")
-
 # load data
 word_counts <- read.csv("https://raw.github.com/ewenme/hardwax_bot/master/Data/words.csv",
                         stringsAsFactors = FALSE)
@@ -160,8 +133,3 @@ tweet_text <- dumb_hardwax()
 
 # post tweet
 post_tweet(status = tweet_text, token = twitter_token)
-
-
-# STOP -------------------------------------------------------------
-
-gce_vm_stop(vm)

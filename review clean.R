@@ -13,20 +13,22 @@ reviews <- read_csv("./Data/reviews.csv")
 # TEXT MINING ---------------------------------------------------
 
 # get unique words
-words <- reviews %>%
-  unnest_tokens(word, value, token = "ngrams", to_lower = TRUE, n = 1)
-
-# get word counts
-word_counts <- count(words, word, sort = TRUE) %>% filter(word != "")
+word_counts <- reviews %>%
+  unnest_tokens(word, value, token = "ngrams", to_lower = TRUE, n = 1) %>%
+  count(word, sort = TRUE) %>% filter(word != "")
 
 # get sentence openers
-openers <- str_extract(reviews$value, '\\w*') %>% str_to_lower() %>% as_data_frame()
-
-# get opener counts
-opener_counts <- count(openers, value, sort = TRUE) %>% rename(word=value) %>% filter(word != "")
+opener_counts <- str_extract(reviews$value, '\\w*') %>% 
+  str_to_lower() %>% 
+  as_data_frame() %>%
+  count(value, sort = TRUE) %>% 
+  rename(word=value) %>% 
+  filter(word != "")
 
 # get words preceding commas
-comma_precede <- str_split_fixed(reviews$value, ',', 5)  %>% as_data_frame() %>% filter(`V1` != "")
+comma_precede <- str_split_fixed(reviews$value, ',', 5)  %>% 
+  as_data_frame() %>% 
+  filter(`V1` != "")
 
 a <- comma_precede %>% filter(V2 != "") 
 b <- a %>% filter(`V3` != "") %>% select(`V2`) %>% as.vector()

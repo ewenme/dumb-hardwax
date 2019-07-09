@@ -1,5 +1,5 @@
-# hardwax bot
+# dumb-hardwax
 
-A Twitter Bot scraping [Hardwax](https://hardwax.com/) reviews, generating new ones through a markov chain text generator implementation and sharing these on twitter.
+A markov chain [Hardwax](https://hardwax.com/) review generator.
 
-Dumb Hardwax was deployed via [Azure Functions](https://azure.microsoft.com/en-gb/services/functions/) and now [lives here](https://twitter.com/dumb_hardwax). 
+Previously deployed via [Azure Functions](https://azure.microsoft.com/en-gb/services/functions/), not currently live. 
